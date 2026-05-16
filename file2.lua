@@ -768,8 +768,10 @@ return function(env)
     --------------------------------------------------------------------------------------------------------------------------------------------------------------
     --------------------------------------------------------------------------------------------------------------------------------------------------------------
     --------------------------------------------------------------------------------------------------------------------------------------------------------------
-    
-    
+
+    databaseTab.new("label", { text = "after selecting a choosing a build," })
+    databaseTab.new("label", { text = "click 'Download Build' and it will be saved to your workspace\n " })
+
     local BuildDatabase = databaseTab.new("dropdown", {
         text = "Select Build",
     })
@@ -917,7 +919,9 @@ return function(env)
         task.wait(1)
         refreshBuildsList()
     end)
-    
+
+    databaseTab.new("label", { text = "Fun Fact: You can add your own build files on our Discord!" })
+
     refreshBuildsList()
     
     local characterFolder = clientTab.new("folder", {
@@ -1527,26 +1531,20 @@ return function(env)
     -------------------------------------------------------------------------------------------- Credits
     -------------------------------------------------------------------------------------------- Credits
     
-    local creditsFolder = creditsTab.new("folder", {
-        text = "Credits",
-    })
-    creditsFolder.new("label", {
-        text = " ",
-    })
-    creditsFolder.new("label", {
+    creditsTab.new("label", {
         text = "Creator and Main Scripter: Sxirbes (federal) \nSten: Credits for the old original Source\nTheRealAsu: Nice Guy who helped with Properties saving",
     })
-    creditsFolder.new("label", { text = "" })
+    creditsTab.new("label", { text = "" })
     
-    creditsFolder.new("label", { text = "Join our Community Server for Build Files and help." })
+    creditsTab.new("label", { text = "Join our Community Server for Build Files and help." })
     
-    creditsFolder.new("button", {
-        text = "Join our Discord (copy invite to clipboard)",
+    creditsTab.new("button", {
+        text = "Join our Discord (copy invite",
     }).event:Connect(function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Vyrusspcs/weshkyv2/refs/heads/main/client/external/discord.lua"))()
     end)
     
-    creditsFolder.open()
+    creditsTab.open()
     
     AntiAFK()
     
@@ -1563,6 +1561,6 @@ return function(env)
 
     window.open()
     mainTab:show()
-    
+
 end
 
