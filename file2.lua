@@ -14,25 +14,23 @@ return function(env)
     local r, g, b = string.match(UiColor, "(%d+),%s*(%d+),%s*(%d+)")
     local mainColor = Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b))
     
-    
-    
     window.open()
     local autoFarmTab = window.new({ text = "Auto Farm" })
     local extrasTab = window.new({ text = "Extras" })
     
-    local Database = extrasTab.new("folder", {
+    local databaseTab = extrasTab.new("folder", {
         text = "Database",
     })
     
-    local Special = extrasTab.new("folder", {
+    local specialTab = extrasTab.new("folder", {
         text = "Special",
     })
     
-    local Client = extrasTab.new("folder", {
+    local clientTab = extrasTab.new("folder", {
         text = "Client",
     })
     
-    local Credits = extrasTab.new("folder", {
+    local creditsTab = extrasTab.new("folder", {
         text = "Credits",
     })
     
@@ -1535,7 +1533,7 @@ return function(env)
     -------------------------------------------------------------------------------------------- Credits
     -------------------------------------------------------------------------------------------- Credits
     
-    local creditsFolder = creditsTab.new("folder", {
+    local extrasTab = creditsTab.new("folder", {
         text = "Credits",
     })
     creditsFolder.new("label", {
