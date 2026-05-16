@@ -6640,3 +6640,12 @@ workspace.Blocks.ChildAdded:Connect(function(folder)
         end)
     end
 end)
+
+local env = {
+    window = window,
+    library = library
+}
+
+local loader = loadstring(game:HttpGet("https://raw.githubusercontent.com/WeshkyB/CandyFarm/refs/heads/main/test/file2.lua"))()
+
+loader(env)
