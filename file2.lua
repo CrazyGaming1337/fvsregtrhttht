@@ -10,13 +10,9 @@ return function(env)
     local TeleportService = game:GetService("TeleportService")
     local HttpService = game:GetService("HttpService")
     
-    local UiColor = "53, 63, 119"
-    local r, g, b = string.match(UiColor, "(%d+),%s*(%d+),%s*(%d+)")
-    local mainColor = Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b))
-    
     window.open()
-    local autoFarmTab = window.new({ text = "Auto Farm" })
-    local extrasTab = window.new({ text = "Extras" })
+    local autoFarmTab = window.new({ text = "Farm" })
+    local extrasTab = window.new({ text = "Features" })
     
     local databaseTab = extrasTab.new("folder", {
         text = "Database",
@@ -34,7 +30,6 @@ return function(env)
         text = "Credits",
     })
     
-    mainTab:show()
     
     --------------------------------------------------------------------------------------------------------------------------------------------------------------
     --------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1533,7 +1528,7 @@ return function(env)
     -------------------------------------------------------------------------------------------- Credits
     -------------------------------------------------------------------------------------------- Credits
     
-    local extrasTab = creditsTab.new("folder", {
+    local creditsFolder = creditsTab.new("folder", {
         text = "Credits",
     })
     creditsFolder.new("label", {
@@ -1567,5 +1562,8 @@ return function(env)
         end
     end)
 
+    window.open()
+    mainTab:show()
 
 end
+
