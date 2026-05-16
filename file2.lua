@@ -769,8 +769,8 @@ return function(env)
     --------------------------------------------------------------------------------------------------------------------------------------------------------------
     --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    databaseTab.new("label", { text = "after selecting a choosing a build," })
-    databaseTab.new("label", { text = "click 'Download Build' and it will be saved to your workspace\n " })
+    databaseTab.new("label", { text = "After selecting a choosing a Build, click 'Download Build'" })
+    databaseTab.new("label", { text = "and it will be saved to your Workspace\n " })
 
     local BuildDatabase = databaseTab.new("dropdown", {
         text = "Select Build",
@@ -1530,7 +1530,11 @@ return function(env)
     -------------------------------------------------------------------------------------------- Credits
     -------------------------------------------------------------------------------------------- Credits
     -------------------------------------------------------------------------------------------- Credits
-    
+
+    creditsTab.new("label", {
+        text = " ",
+    })
+
     creditsTab.new("label", {
         text = "Creator and Main Scripter: Sxirbes (federal) \nSten: Credits for the old original Source\nTheRealAsu: Nice Guy who helped with Properties saving",
     })
@@ -1560,7 +1564,7 @@ return function(env)
     end)
 
     window.open()
+    local mainTab = env.mainTab or window.new({ text = "Main" })
     mainTab:show()
-
 end
 
