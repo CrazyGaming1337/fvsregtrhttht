@@ -12,6 +12,7 @@ return function(env)
     
     window.open()
     local autoFarmTab = window.new({ text = "Farm" })
+    local adjustersTab = window.new({ text = "Adjusters" })
     local extrasTab = window.new({ text = "Features" })
     
     local databaseTab = extrasTab.new("folder", {
@@ -37,6 +38,218 @@ return function(env)
     --------------------------------------------------------------------------------------------------------------------------------------------------------------
     --------------------------------------------------------------------------------------------------------------------------------------------------------------
     
+    local positionFolder = adjustersTab.new("folder", {
+        text = "Position Offset",
+    })
+    positionFolder.new("input", {
+        text = "Move Multiplier",
+        placeholder = "1",
+    }).event:Connect(function(value)
+        moveMultiplier = tonumber(value) or 1
+    end)
+
+    positionFolder.new("button", {
+        text = "Move Up",
+    }).event:Connect(function()
+        X.UpdatePreview(Vector3_new(0, moveMultiplier, 0))
+    end)
+
+    positionFolder.new("button", {
+        text = "Move Down",
+    }).event:Connect(function()
+        X.UpdatePreview(Vector3_new(0, -moveMultiplier, 0))
+    end)
+
+    positionFolder.new("button", {
+        text = "Move Left",
+    }).event:Connect(function()
+        X.UpdatePreview(Vector3_new(moveMultiplier, 0, 0))
+    end)
+
+    positionFolder.new("button", {
+        text = "Move Right",
+    }).event:Connect(function()
+        X.UpdatePreview(Vector3_new(-moveMultiplier, 0, 0))
+    end)
+
+    positionFolder.new("button", {
+        text = "Move Forwards",
+    }).event:Connect(function()
+        X.UpdatePreview(Vector3_new(0, 0, moveMultiplier))
+    end)
+
+    positionFolder.new("button", {
+        text = "Move Backwards",
+    }).event:Connect(function()
+        X.UpdatePreview(Vector3_new(0, 0, -moveMultiplier))
+    end)
+    positionFolder.open()
+
+    local rotationFolder = adjustersTab.new("folder", {
+        text = "Rotation Offset",
+    })
+    local rotXSlider = rotationFolder.new("slider", {
+        text = "X",
+        min = 0,
+        max = 360,
+        value = rotX,
+    })
+    rotXSlider.event:Connect(function(value)
+        rotX = value
+        X.UpdatePreview()
+    end)
+
+    local rotYSlider = rotationFolder.new("slider", {
+        text = "Y",
+        min = 0,
+        max = 360,
+        value = rotY,
+    })
+    rotYSlider.event:Connect(function(value)
+        rotY = value
+        X.UpdatePreview()
+    end)
+
+    local rotZSlider = rotationFolder.new("slider", {
+        text = "Z",
+        min = 0,
+        max = 360,
+        value = rotZ,
+    })
+    rotZSlider.event:Connect(function(value)
+        rotZ = value
+        X.UpdatePreview()
+    end)
+    rotationFolder.open()
+
+    local otherFolder = adjustersTab.new("folder", {
+        text = "Other",
+    })
+    otherFolder.new("input", {
+        text = "Size %",
+        placeholder = "100",
+    }).event:Connect(function(value)
+        X.ClearPreview()
+        X.PreviewFile(selectedFile, tonumber(value) / 100)
+    end)
+
+    otherFolder.new("button", {
+        text = "Mirror Build",
+    }).event:Connect(X.MirrorBuild)
+
+    otherFolder.new("button", {
+        text = "Ground Build",
+    }).event:Connect(function()
+        local previewBlocks = BuildPreview:GetChildren()
+        if #previewBlocks == 0 then
+            return
+        end
+        
+        local lowestY = math.huge
+        for _, block in ipairs(previewBlocks) do
+            if block:FindFirstChild("PPart") then
+                local part = block.PPart
+                local partBottom = part.Position.Y - (part.Size.Y / 2)
+                if partBottom < lowestY then
+                    lowestY = partBottom
+                end
+            end
+        end
+        
+        local plot = X.GetPlot()
+        if not plot then return end
+        
+        local groundLevel = plot.Position.Y + 5.1
+        local moveAmount = groundLevel - lowestY
+        
+        for _, block in ipairs(previewBlocks) do
+            if block:FindFirstChild("PPart") then
+                block.PPart.CFrame = block.PPart.CFrame + Vector3.new(0, moveAmount, 0)
+            end
+        end
+    end)
+
+    otherFolder.new("button", {
+        text = "Center Build",
+    }).event:Connect(function()
+        local previewBlocks = BuildPreview:GetChildren()
+        if #previewBlocks == 0 then
+            return
+        end    
+
+        local plot = X.GetPlot()
+        if not plot then
+            return
+        end
+        
+        local minX, minY, minZ = math.huge, math.huge, math.huge
+        local maxX, maxY, maxZ = -math.huge, -math.huge, -math.huge
+        
+        for _, block in ipairs(previewBlocks) do
+            local part = nil
+            if block:FindFirstChild("PPart") then
+                part = block.PPart
+            elseif block:IsA("BasePart") then
+                part = block
+            end
+            
+            if part then
+                local size = part.Size
+                local position = part.Position
+                
+                local halfSize = size / 2
+                minX = math.min(minX, position.X - halfSize.X)
+                minY = math.min(minY, position.Y - halfSize.Y)
+                minZ = math.min(minZ, position.Z - halfSize.Z)
+                maxX = math.max(maxX, position.X + halfSize.X)
+                maxY = math.max(maxY, position.Y + halfSize.Y)
+                maxZ = math.max(maxZ, position.Z + halfSize.Z)
+            end
+        end
+        
+        local centerPosition = Vector3.new(
+            (minX + maxX) / 2,
+            (minY + maxY) / 2,
+            (minZ + maxZ) / 2
+        )
+        
+        local totalSize = Vector3.new(maxX - minX, maxY - minY, maxZ - minZ)
+        
+        local plotCenter = plot.Position
+        local targetPosition = Vector3.new(
+            plotCenter.X,
+            plotCenter.Y + totalSize.Y / 2 + 5,
+            plotCenter.Z
+        )
+        
+        local offset = targetPosition - centerPosition
+        
+        for _, block in ipairs(previewBlocks) do
+            if block:IsA("Model") then
+                if block.PrimaryPart then
+                    local currentCF = block:GetPrimaryPartCFrame()
+                    block:SetPrimaryPartCFrame(currentCF + offset)
+                else
+                    local mainPart = block:FindFirstChild("PPart") or block:FindFirstChildWhichIsA("BasePart")
+                    if mainPart then
+                        mainPart.CFrame = mainPart.CFrame + offset
+                    end
+                end
+            elseif block:IsA("BasePart") then
+                block.CFrame = block.CFrame + offset
+            end
+        end
+        
+        rotX = 0
+        rotY = 0
+        rotZ = 0
+        
+        if rotXSlider then rotXSlider.set(0) end
+        if rotYSlider then rotYSlider.set(0) end
+        if rotZSlider then rotZSlider.set(0) end
+    end)
+    otherFolder.open()
+
     local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
     local humanoid = character:FindFirstChildOfClass("Humanoid") or character:WaitForChild("Humanoid")
     local TriggerChest = workspace.BoatStages.NormalStages.TheEnd.GoldenChest.Trigger
